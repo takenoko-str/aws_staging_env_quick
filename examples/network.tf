@@ -59,7 +59,7 @@ resource "aws_subnet" "subnet-stg-hoge-elb-a" {
   depends_on = ["aws_internet_gateway.igw-stg-hoge"]
 }
 
-resource "aws_route_table_association" "asso-stg-hoge-elb-a" {
+resource "aws_route_table_association" "rtbassoc-stg-hoge-elb-a" {
   subnet_id      = "${aws_subnet.subnet-stg-hoge-elb-a.id}"
   route_table_id = "${aws_route_table.rtb-stg-hoge-elb.id}"
 }
@@ -75,7 +75,7 @@ resource "aws_subnet" "subnet-stg-hoge-elb-c" {
   depends_on = ["aws_internet_gateway.igw-stg-hoge"]
 }
 
-resource "aws_route_table_association" "asso-stg-hoge-elb-c" {
+resource "aws_route_table_association" "rtbassoc-stg-hoge-elb-c" {
   subnet_id      = "${aws_subnet.subnet-stg-hoge-elb-c.id}"
   route_table_id = "${aws_route_table.rtb-stg-hoge-elb.id}"
 }
@@ -91,7 +91,7 @@ resource "aws_subnet" "subnet-stg-hoge-ap-a" {
   depends_on = ["aws_internet_gateway.igw-stg-hoge"]
 }
 
-resource "aws_route_table_association" "asso-stg-hoge-ap-a" {
+resource "aws_route_table_association" "rtbassoc-stg-hoge-ap-a" {
   subnet_id      = "${aws_subnet.subnet-stg-hoge-ap-a.id}"
   route_table_id = "${aws_route_table.rtb-stg-hoge-ap.id}"
 }
@@ -107,7 +107,7 @@ resource "aws_subnet" "subnet-stg-hoge-ap-c" {
   depends_on = ["aws_internet_gateway.igw-stg-hoge"]
 }
 
-resource "aws_route_table_association" "asso-stg-hoge-ap-c" {
+resource "aws_route_table_association" "rtbassoc-stg-hoge-ap-c" {
   subnet_id      = "${aws_subnet.subnet-stg-hoge-ap-c.id}"
   route_table_id = "${aws_route_table.rtb-stg-hoge-ap.id}"
 }
@@ -123,7 +123,7 @@ resource "aws_subnet" "subnet-stg-hoge-db-a" {
   depends_on = ["aws_internet_gateway.igw-stg-hoge"]
 }
 
-resource "aws_route_table_association" "asso-stg-hoge-db-a" {
+resource "aws_route_table_association" "rtbassoc-stg-hoge-db-a" {
   subnet_id      = "${aws_subnet.subnet-stg-hoge-db-a.id}"
   route_table_id = "${aws_route_table.rtb-stg-hoge-db.id}"
 }
@@ -139,7 +139,7 @@ resource "aws_subnet" "subnet-stg-hoge-db-c" {
   depends_on = ["aws_internet_gateway.igw-stg-hoge"]
 }
 
-resource "aws_route_table_association" "asso-stg-hoge-db-c" {
+resource "aws_route_table_association" "rtbassoc-stg-hoge-db-c" {
   subnet_id      = "${aws_subnet.subnet-stg-hoge-db-c.id}"
   route_table_id = "${aws_route_table.rtb-stg-hoge-db.id}"
 }
