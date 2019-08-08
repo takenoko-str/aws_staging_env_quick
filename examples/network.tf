@@ -14,7 +14,7 @@ resource "aws_internet_gateway" "igw-identifier" {
   }
 }
 
-resource "aws_route_table" "rtb-identifier-elb" {
+resource "aws_route_table" "rtb-identifier-lb" {
   vpc_id = "${aws_vpc.vpc-identifier.id}"
 
   route {
@@ -23,7 +23,7 @@ resource "aws_route_table" "rtb-identifier-elb" {
   }
 
   tags {
-    Name = "rtb-identifier-elb"
+    Name = "rtb-identifier-lb"
   }
 }
 
@@ -48,36 +48,36 @@ resource "aws_route_table" "rtb-identifier-db" {
   }
 }
 
-resource "aws_subnet" "subnet-identifier-elb-a" {
+resource "aws_subnet" "subnet-identifier-lb-a" {
   vpc_id     = "${aws_vpc.vpc-identifier.id}"
   cidr_block = "10.129.0.0/24"
   map_public_ip_on_launch = true
   availability_zone = "ap-northeast-1a"
   tags {
-    Name = "subnet-identifier-elb-a"
+    Name = "subnet-identifier-lb-a"
   }
   depends_on = ["aws_internet_gateway.igw-identifier"]
 }
 
-resource "aws_route_table_association" "rtbassoc-identifier-elb-a" {
-  subnet_id      = "${aws_subnet.subnet-identifier-elb-a.id}"
-  route_table_id = "${aws_route_table.rtb-identifier-elb.id}"
+resource "aws_route_table_association" "rtbassoc-identifier-lb-a" {
+  subnet_id      = "${aws_subnet.subnet-identifier-lb-a.id}"
+  route_table_id = "${aws_route_table.rtb-identifier-lb.id}"
 }
 
-resource "aws_subnet" "subnet-identifier-elb-c" {
+resource "aws_subnet" "subnet-identifier-lb-c" {
   vpc_id     = "${aws_vpc.vpc-identifier.id}"
   cidr_block = "10.129.1.0/24"
   map_public_ip_on_launch = true
   availability_zone = "ap-northeast-1c"
   tags {
-    Name = "subnet-identifier-elb-c"
+    Name = "subnet-identifier-lb-c"
   }
   depends_on = ["aws_internet_gateway.igw-identifier"]
 }
 
-resource "aws_route_table_association" "rtbassoc-identifier-elb-c" {
-  subnet_id      = "${aws_subnet.subnet-identifier-elb-c.id}"
-  route_table_id = "${aws_route_table.rtb-identifier-elb.id}"
+resource "aws_route_table_association" "rtbassoc-identifier-lb-c" {
+  subnet_id      = "${aws_subnet.subnet-identifier-lb-c.id}"
+  route_table_id = "${aws_route_table.rtb-identifier-lb.id}"
 }
 
 resource "aws_subnet" "subnet-identifier-ap-a" {
@@ -151,7 +151,7 @@ resource "aws_eip" "eip-identifier-nat" {
 
 resource "aws_nat_gateway" "nat-identifier" {
   allocation_id = "${aws_eip.eip-identifier-nat.id}"
-  subnet_id     = "${aws_subnet.subnet-identifier-elb-a.id}"
+  subnet_id     = "${aws_subnet.subnet-identifier-lb-a.id}"
   tags {
     Name = "eip-identifier-nat"
   }
