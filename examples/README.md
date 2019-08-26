@@ -1,20 +1,31 @@
-### aws_staging_env_quick
-ソッコーでAWSのステージング環境をつくるterraformテンプレート
+### Description
+AWSのステージング環境をつくるterraformテンプレート集
+- ALBのテンプレート
+- ネットワークのテンプレート
+- etc...
 
+## Requirement
+
+```
+$ terraform -v
+Terraform v0.11.7
++ provider.aws v0.1.4
+```
+
+## Usage
 ### alb.tf
-#### envファイルの読み込み
+#### envファイルの記入＆読み込み
 
 ```
 $ source .env
 ```
 
-#### vimで適宜以下を実行してリソース名を変更する
+#### vimで適宜以下を実行してリソース名を変更
 
 ```
 $ vim alb.tf
 :%s/identifier/your_resource_name/g
 ```
-
 
 ### network.tf
 #### LB-AP-DBにサブネットを分けた状態で以下のようにした
