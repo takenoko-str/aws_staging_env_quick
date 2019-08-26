@@ -1,6 +1,6 @@
 variable "acm_yourdomain" {}
-variable "subnet_identifier_elb_a" {}
-variable "subnet_identifier_elb_c" {}
+variable "subnet_identifier_lb_a" {}
+variable "subnet_identifier_lb_c" {}
 variable "sg_identifier_lb" {}
 variable "vpc_identifier" {}
 
@@ -10,12 +10,12 @@ data "aws_acm_certificate" "acm_yourdomain" {
   domain = "${var.acm_yourdomain}"
 }
 
-data "aws_subnet" "subnet_identifier_elb_c" {
-  id = "${var.subnet_identifier_elb_c}"
+data "aws_subnet" "subnet_identifier_lb_c" {
+  id = "${var.subnet_identifier_lb_c}"
 }
 
-data "aws_subnet" "subnet_identifier_elb_a" {
-  id = "${var.subnet_identifier_elb_a}"
+data "aws_subnet" "subnet_identifier_lb_a" {
+  id = "${var.subnet_identifier_lb_a}"
 }
 
 data "aws_security_group" "sg_identifier_lb" {
@@ -38,7 +38,7 @@ resource "aws_lb" "lb-identifier" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = ["${data.aws_security_group.sg_identifier_lb.id}"]
-  subnets            = ["${data.aws_subnet.subnet_identifier_elb_a.id}", "${data.aws_subnet.subnet_identifier_elb_c.id}"]
+  subnets            = ["${data.aws_subnet.subnet_identifier_lb_a.id}", "${data.aws_subnet.subnet_identifier_lb_c.id}"]
 
   tags {
     Name = "lb-identifier"
