@@ -4,9 +4,8 @@ variable "subnet_identifier_lb_c" {}
 variable "sg_identifier_lb" {}
 variable "vpc_identifier" {}
 
-
 data "aws_acm_certificate" "acm_yourdomain" {
-  types = ["AMAZON_ISSUED"]
+  types  = ["AMAZON_ISSUED"]
   domain = "${var.acm_yourdomain}"
 }
 
@@ -72,6 +71,7 @@ resource "aws_lb_listener" "ln-identifier" {
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-2016-08"
   certificate_arn   = "${data.aws_acm_certificate.acm_yourdomain.arn}"
+
   default_action {
     type             = "forward"
     target_group_arn = "${aws_lb_target_group.lb-tg-identifier.arn}"
