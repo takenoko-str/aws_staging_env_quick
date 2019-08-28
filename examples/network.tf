@@ -8,13 +8,13 @@ variable "subnet_identifier_ap_c_cidr_block" {}
 variable "subnet_identifier_db_a_cidr_block" {}
 variable "subnet_identifier_db_c_cidr_block" {}
 
-
 resource "aws_vpc" "vpc-identifier" {
-    cidr_block = "${var.vpc_identifier_cidr_block}"
-    enable_dns_hostnames = true
-    tags {
-        Name = "vpc-identifier"
-    }
+  cidr_block           = "${var.vpc_identifier_cidr_block}"
+  enable_dns_hostnames = true
+
+  tags {
+    Name = "vpc-identifier"
+  }
 }
 
 resource "aws_internet_gateway" "igw-identifier" {
@@ -60,13 +60,15 @@ resource "aws_route_table" "rtb-identifier-db" {
 }
 
 resource "aws_subnet" "subnet-identifier-lb-a" {
-  vpc_id     = "${aws_vpc.vpc-identifier.id}"
-  cidr_block = "${var.subnet_identifier_lb_a_cidr_block}"
+  vpc_id                  = "${aws_vpc.vpc-identifier.id}"
+  cidr_block              = "${var.subnet_identifier_lb_a_cidr_block}"
   map_public_ip_on_launch = true
-  availability_zone = "ap-northeast-1a"
+  availability_zone       = "ap-northeast-1a"
+
   tags {
     Name = "subnet-identifier-lb-a"
   }
+
   depends_on = ["aws_internet_gateway.igw-identifier"]
 }
 
@@ -76,13 +78,15 @@ resource "aws_route_table_association" "rtbassoc-identifier-lb-a" {
 }
 
 resource "aws_subnet" "subnet-identifier-lb-c" {
-  vpc_id     = "${aws_vpc.vpc-identifier.id}"
-  cidr_block = "${var.subnet_identifier_lb_c_cidr_block}"
+  vpc_id                  = "${aws_vpc.vpc-identifier.id}"
+  cidr_block              = "${var.subnet_identifier_lb_c_cidr_block}"
   map_public_ip_on_launch = true
-  availability_zone = "ap-northeast-1c"
+  availability_zone       = "ap-northeast-1c"
+
   tags {
     Name = "subnet-identifier-lb-c"
   }
+
   depends_on = ["aws_internet_gateway.igw-identifier"]
 }
 
@@ -92,13 +96,15 @@ resource "aws_route_table_association" "rtbassoc-identifier-lb-c" {
 }
 
 resource "aws_subnet" "subnet-identifier-ap-a" {
-  vpc_id     = "${aws_vpc.vpc-identifier.id}"
-  cidr_block = "${var.subnet_identifier_ap_a_cidr_block}"
+  vpc_id                  = "${aws_vpc.vpc-identifier.id}"
+  cidr_block              = "${var.subnet_identifier_ap_a_cidr_block}"
   map_public_ip_on_launch = true
-  availability_zone = "ap-northeast-1a"
+  availability_zone       = "ap-northeast-1a"
+
   tags {
     Name = "subnet-identifier-ap-a"
   }
+
   depends_on = ["aws_internet_gateway.igw-identifier"]
 }
 
@@ -108,13 +114,15 @@ resource "aws_route_table_association" "rtbassoc-identifier-ap-a" {
 }
 
 resource "aws_subnet" "subnet-identifier-ap-c" {
-  vpc_id     = "${aws_vpc.vpc-identifier.id}"
-  cidr_block = "${var.subnet_identifier_ap_c_cidr_block}"
+  vpc_id                  = "${aws_vpc.vpc-identifier.id}"
+  cidr_block              = "${var.subnet_identifier_ap_c_cidr_block}"
   map_public_ip_on_launch = true
-  availability_zone = "ap-northeast-1c"
+  availability_zone       = "ap-northeast-1c"
+
   tags {
     Name = "subnet-identifier-ap-c"
   }
+
   depends_on = ["aws_internet_gateway.igw-identifier"]
 }
 
@@ -124,13 +132,15 @@ resource "aws_route_table_association" "rtbassoc-identifier-ap-c" {
 }
 
 resource "aws_subnet" "subnet-identifier-db-a" {
-  vpc_id     = "${aws_vpc.vpc-identifier.id}"
-  cidr_block = "${var.subnet_identifier_db_a_cidr_block}"
+  vpc_id                  = "${aws_vpc.vpc-identifier.id}"
+  cidr_block              = "${var.subnet_identifier_db_a_cidr_block}"
   map_public_ip_on_launch = true
-  availability_zone = "ap-northeast-1a"
+  availability_zone       = "ap-northeast-1a"
+
   tags {
     Name = "subnet-identifier-db-a"
   }
+
   depends_on = ["aws_internet_gateway.igw-identifier"]
 }
 
@@ -140,13 +150,15 @@ resource "aws_route_table_association" "rtbassoc-identifier-db-a" {
 }
 
 resource "aws_subnet" "subnet-identifier-db-c" {
-  vpc_id     = "${aws_vpc.vpc-identifier.id}"
-  cidr_block = "${var.subnet_identifier_db_c_cidr_block}"
+  vpc_id                  = "${aws_vpc.vpc-identifier.id}"
+  cidr_block              = "${var.subnet_identifier_db_c_cidr_block}"
   map_public_ip_on_launch = true
-  availability_zone = "ap-northeast-1c"
+  availability_zone       = "ap-northeast-1c"
+
   tags {
     Name = "subnet-identifier-db-c"
   }
+
   depends_on = ["aws_internet_gateway.igw-identifier"]
 }
 
@@ -156,15 +168,17 @@ resource "aws_route_table_association" "rtbassoc-identifier-db-c" {
 }
 
 resource "aws_eip" "eip-identifier-nat" {
-  vpc = true
+  vpc        = true
   depends_on = ["aws_internet_gateway.igw-identifier"]
 }
 
 resource "aws_nat_gateway" "nat-identifier" {
   allocation_id = "${aws_eip.eip-identifier-nat.id}"
   subnet_id     = "${aws_subnet.subnet-identifier-lb-a.id}"
+
   tags {
     Name = "eip-identifier-nat"
   }
+
   depends_on = ["aws_internet_gateway.igw-identifier"]
 }
