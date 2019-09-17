@@ -18,7 +18,7 @@ resource "aws_vpc" "vpc-identifier" {
   cidr_block           = "${var.vpc_identifier_cidr_block}"
   enable_dns_hostnames = true
 
-  tags {
+  tags = {
     Name = "vpc-identifier"
   }
 }
@@ -26,7 +26,7 @@ resource "aws_vpc" "vpc-identifier" {
 resource "aws_internet_gateway" "igw-identifier" {
   vpc_id = "${aws_vpc.vpc-identifier.id}"
 
-  tags {
+  tags = {
     Name = "igw-identifier"
   }
 }
@@ -39,7 +39,7 @@ resource "aws_route_table" "rtb-identifier-lb" {
     gateway_id = "${aws_internet_gateway.igw-identifier.id}"
   }
 
-  tags {
+  tags = {
     Name = "rtb-identifier-lb"
   }
 }
@@ -52,7 +52,7 @@ resource "aws_route_table" "rtb-identifier-ap" {
     gateway_id = "${aws_nat_gateway.nat-identifier.id}"
   }
 
-  tags {
+  tags = {
     Name = "rtb-identifier-ap"
   }
 }
@@ -60,7 +60,7 @@ resource "aws_route_table" "rtb-identifier-ap" {
 resource "aws_route_table" "rtb-identifier-db" {
   vpc_id = "${aws_vpc.vpc-identifier.id}"
 
-  tags {
+  tags = {
     Name = "rtb-identifier-db"
   }
 }
@@ -71,7 +71,7 @@ resource "aws_subnet" "subnet-identifier-lb-a" {
   map_public_ip_on_launch = true
   availability_zone       = "ap-northeast-1a"
 
-  tags {
+  tags = {
     Name = "subnet-identifier-lb-a"
   }
 
@@ -89,7 +89,7 @@ resource "aws_subnet" "subnet-identifier-lb-c" {
   map_public_ip_on_launch = true
   availability_zone       = "ap-northeast-1c"
 
-  tags {
+  tags = {
     Name = "subnet-identifier-lb-c"
   }
 
@@ -107,7 +107,7 @@ resource "aws_subnet" "subnet-identifier-ap-a" {
   map_public_ip_on_launch = true
   availability_zone       = "ap-northeast-1a"
 
-  tags {
+  tags = {
     Name = "subnet-identifier-ap-a"
   }
 
@@ -125,7 +125,7 @@ resource "aws_subnet" "subnet-identifier-ap-c" {
   map_public_ip_on_launch = true
   availability_zone       = "ap-northeast-1c"
 
-  tags {
+  tags = {
     Name = "subnet-identifier-ap-c"
   }
 
@@ -143,7 +143,7 @@ resource "aws_subnet" "subnet-identifier-db-a" {
   map_public_ip_on_launch = true
   availability_zone       = "ap-northeast-1a"
 
-  tags {
+  tags = {
     Name = "subnet-identifier-db-a"
   }
 
@@ -161,7 +161,7 @@ resource "aws_subnet" "subnet-identifier-db-c" {
   map_public_ip_on_launch = true
   availability_zone       = "ap-northeast-1c"
 
-  tags {
+  tags = {
     Name = "subnet-identifier-db-c"
   }
 
@@ -182,7 +182,7 @@ resource "aws_nat_gateway" "nat-identifier" {
   allocation_id = "${aws_eip.eip-identifier-nat.id}"
   subnet_id     = "${aws_subnet.subnet-identifier-lb-a.id}"
 
-  tags {
+  tags = {
     Name = "eip-identifier-nat"
   }
 
