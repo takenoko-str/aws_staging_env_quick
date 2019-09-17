@@ -1,3 +1,9 @@
+terraform {
+  backend "s3" {
+    region = "ap-northeast-1"
+  }
+}
+
 variable "vpc_identifier_cidr_block" {}
 variable "rtb_identifier_lb_cidr_block" {}
 variable "rtb_identifier_ap_cidr_block" {}
