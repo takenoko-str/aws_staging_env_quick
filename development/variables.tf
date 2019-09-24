@@ -13,7 +13,8 @@ variable "acm_yourdomain" {}
 #ASG
 variable "instance_profile_identifier_ap" {}
 variable "ami_ower_account_id" {}
-variable "sns_topic_arn" {}
+variable "sns_topic_name" {}
 variable "instance_type" {}
 variable "ami_name" {}
 variable "key_name" {}
+variable "spot_price" {}

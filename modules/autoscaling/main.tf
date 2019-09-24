@@ -14,14 +14,6 @@ data "aws_ami" "ubuntu" {
   owners = ["${var.ami_ower_account_id}"]
 }
 
-data "aws_subnet" "subnet_identifier_ap_c" {
-  id = "${var.subnet_identifier_ap_c}"
-}
-
-data "aws_subnet" "subnet_identifier_ap_a" {
-  id = "${var.subnet_identifier_ap_a}"
-}
-
 data "aws_iam_instance_profile" "instance_profile_identifier_ap" {
   name = "${var.instance_profile_identifier_ap}"
 }
@@ -34,11 +26,15 @@ resource "aws_launch_configuration" "lc-identifier" {
   security_groups      = ["${aws_security_group.sg-identifier-ap.id}"]
   ebs_optimized        = true
   iam_instance_profile = "${data.aws_iam_instance_profile.instance_profile_identifier_ap.arn}"
-  spot_price           = "0.1"
+  spot_price           = "${var.spot_price}"
 
   lifecycle {
     create_before_destroy = true
   }
+}
+
+data "aws_sns_topic" "sns_topic" {
+  name = "${var.sns_topic_name}"
 }
 
 resource "aws_autoscaling_group" "as-identifier" {
@@ -52,8 +48,8 @@ resource "aws_autoscaling_group" "as-identifier" {
   force_delete              = true
 
   vpc_zone_identifier = [
-    "${data.aws_subnet.subnet_identifier_ap_a.id}",
-    "${data.aws_subnet.subnet_identifier_ap_c.id}",
+    "${var.subnet_identifier_ap_a_id}",
+    "${var.subnet_identifier_ap_c_id}",
   ]
 
   target_group_arns = ["${var.lb_tg_identifier_arn}"]
@@ -158,13 +154,13 @@ resource "aws_autoscaling_notification" "asg_notification" {
     "autoscaling:EC2_INSTANCE_TERMINATE_ERROR",
   ]
 
-  topic_arn = "${var.sns_topic_arn}"
+  topic_arn = "${data.aws_sns_topic.sns_topic.arn}"
 }
 
 resource "aws_security_group" "sg-identifier-ap" {
   name        = "identifier-ap"
   description = "Allow all https inbound traffic"
-  vpc_id      = "${var.vpc_identifier}"
+  vpc_id      = "${var.vpc_identifier_id}"
   tags = {
     Name = "identifier-ap"
   }

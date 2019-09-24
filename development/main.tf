@@ -23,21 +23,22 @@ module "module_vpc" {
 
 module "module_alb" {
   acm_yourdomain = "${var.acm_yourdomain}"
-  subnet_identifier_lb_a = "${module.module_vpc.subnet_identifier_lb_a_id}"
-  subnet_identifier_lb_c = "${module.module_vpc.subnet_identifier_lb_c_id}"
-  vpc_identifier = "${module.module_vpc.vpc_identifier_id}"
+  subnet_identifier_lb_a_id = "${module.module_vpc.subnet_identifier_lb_a_id}"
+  subnet_identifier_lb_c_id = "${module.module_vpc.subnet_identifier_lb_c_id}"
+  vpc_identifier_id = "${module.module_vpc.vpc_identifier_id}"
   source = "../modules/alb"
 }
 
 module "module_autoscaling" {
-  vpc_identifier = "${module.module_vpc.vpc_identifier_id}"
-  subnet_identifier_ap_a = "${module.module_vpc.subnet_identifier_ap_a_id}"
-  subnet_identifier_ap_c = "${module.module_vpc.subnet_identifier_ap_c_id}"
+  vpc_identifier_id = "${module.module_vpc.vpc_identifier_id}"
+  subnet_identifier_ap_a_id = "${module.module_vpc.subnet_identifier_ap_a_id}"
+  subnet_identifier_ap_c_id = "${module.module_vpc.subnet_identifier_ap_c_id}"
   lb_tg_identifier_arn = "${module.module_alb.lb_tg_identifier_arn}"
   instance_profile_identifier_ap = "${var.instance_profile_identifier_ap}"
   ami_ower_account_id = "${var.ami_ower_account_id}"
-  sns_topic_arn = "${var.sns_topic_arn}"
+  sns_topic_name = "${var.sns_topic_name}"
   instance_type = "${var.instance_type}"
+  spot_price = "${var.spot_price}"
   ami_name = "${var.ami_name}"
   key_name = "${var.key_name}"
   source = "../modules/autoscaling"

@@ -3,23 +3,11 @@ data "aws_acm_certificate" "acm_yourdomain" {
   domain = "${var.acm_yourdomain}"
 }
 
-data "aws_subnet" "subnet_identifier_lb_c" {
-  id = "${var.subnet_identifier_lb_c}"
-}
-
-data "aws_subnet" "subnet_identifier_lb_a" {
-  id = "${var.subnet_identifier_lb_a}"
-}
-
-data "aws_vpc" "vpc_identifier" {
-  id = "${var.vpc_identifier}"
-}
-
 resource "aws_lb_target_group" "lb-tg-identifier" {
   name     = "lb-tg-identifier"
   port     = 80
   protocol = "HTTP"
-  vpc_id   = "${data.aws_vpc.vpc_identifier.id}"
+  vpc_id   = "${var.vpc_identifier_id}"
 }
 
 resource "aws_lb" "lb-identifier" {
@@ -27,7 +15,7 @@ resource "aws_lb" "lb-identifier" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = ["${aws_security_group.sg-identifier-lb.id}"]
-  subnets            = ["${data.aws_subnet.subnet_identifier_lb_a.id}", "${data.aws_subnet.subnet_identifier_lb_c.id}"]
+  subnets            = ["${var.subnet_identifier_lb_a_id}", "${var.subnet_identifier_lb_c_id}"]
 
   tags = {
     Name = "lb-identifier"
@@ -71,7 +59,7 @@ resource "aws_lb_listener" "ln-identifier" {
 resource "aws_security_group" "sg-identifier-lb" {
   name        = "identifier-lb"
   description = "Allow all https inbound traffic"
-  vpc_id      = "${data.aws_vpc.vpc_identifier.id}"
+  vpc_id      = "${var.vpc_identifier_id}"
   tags = {
     Name = "identifier-lb"
   }
