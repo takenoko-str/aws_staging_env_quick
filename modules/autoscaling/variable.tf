@@ -9,3 +9,6 @@ variable "instance_type" {}
 variable "spot_price" {}
 variable "ami_name" {}
 variable "key_name" {}
+variable "min_size" {}
+variable "max_size" {}
+variable "desired_capacity" {}

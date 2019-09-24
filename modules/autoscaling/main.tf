@@ -40,9 +40,9 @@ data "aws_sns_topic" "sns_topic" {
 resource "aws_autoscaling_group" "as-identifier" {
   name                      = "as-identifier-${var.ami_name}"
   launch_configuration      = "${aws_launch_configuration.lc-identifier.name}"
-  min_size                  = 0
-  max_size                  = 2
-  desired_capacity          = 1
+  min_size                  = var.min_size
+  max_size                  = var.max_size
+  desired_capacity          = var.desired_capacity
   health_check_grace_period = 300
   health_check_type         = "ELB"
   force_delete              = true

@@ -41,6 +41,10 @@ module "module_autoscaling" {
   spot_price = "${var.spot_price}"
   ami_name = "${var.ami_name}"
   key_name = "${var.key_name}"
+  min_size = var.min_size
+  max_size = var.max_size
+  desired_capacity = var.desired_capacity
+
   source = "../modules/autoscaling"
 }
 
