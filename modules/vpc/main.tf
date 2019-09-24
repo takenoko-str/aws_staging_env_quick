@@ -33,7 +33,7 @@ resource "aws_route_table" "rtb-identifier-ap" {
 
   route {
     cidr_block = var.rtb_identifier_ap_cidr_block
-    gateway_id = aws_nat_gateway.nat-identifier.id
+    nat_gateway_id = aws_nat_gateway.nat-identifier.id
   }
 
   tags = {
