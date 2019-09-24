@@ -1,14 +1,3 @@
-variable "subnet_identifier_ap_a" {}
-variable "subnet_identifier_ap_c" {}
-variable "iam_instance_profile" {}
-variable "aws_account_number" {}
-variable "target_group_arn" {}
-variable "sg_identifier_ap" {}
-variable "sns_topic_arn" {}
-variable "instance_type" {}
-variable "ami_name" {}
-variable "key_name" {}
-
 data "aws_ami" "ubuntu" {
   most_recent = true
 
@@ -22,7 +11,7 @@ data "aws_ami" "ubuntu" {
     values = ["hvm"]
   }
 
-  owners = ["${var.aws_account_number}"]
+  owners = ["${var.ami_ower_account_id}"]
 }
 
 data "aws_subnet" "subnet_identifier_ap_c" {

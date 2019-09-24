@@ -1,3 +1,9 @@
+terraform {
+  backend "s3" {
+    region = "ap-northeast-1"
+  }
+}
+
 variable "s3_bucket_name" {}
 
 data "terraform_remote_state" "network" {
@@ -7,15 +13,15 @@ data "terraform_remote_state" "network" {
     key      = ".terraform/network/terraform.tfstate"
     region   = "ap-northeast-1"
     profile  = "default"
-    role_arn = "${var.sts_assume_role_arn}"
+#    role_arn = "${var.sts_assume_role_arn}"
   }
 }
 
 provider "aws" {
   region = "ap-northeast-1"
-  assume_role {
-    role_arn     = "${var.sts_assume_role_arn}"
-  }
+#  assume_role {
+#    role_arn     = "${var.sts_assume_role_arn}"
+#  }
 }
 
 resource "aws_security_group" "sg-identifier-lb" {
