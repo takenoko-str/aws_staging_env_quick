@@ -74,6 +74,15 @@ resource "aws_security_group_rule" "sg-identifier-lb-https-ingress" {
   security_group_id = aws_security_group.sg-identifier-lb.id
 }
 
+resource "aws_security_group_rule" "sg-identifier-lb-http-ingress" {
+  type              = "ingress"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.sg-identifier-lb.id
+}
+
 resource "aws_security_group_rule" "sg-identifier-all-egress" {
   type              = "egress"
   to_port           = 0
