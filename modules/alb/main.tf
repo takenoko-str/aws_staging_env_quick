@@ -1,21 +1,21 @@
 data "aws_acm_certificate" "acm_yourdomain" {
   types  = ["AMAZON_ISSUED"]
-  domain = "${var.acm_yourdomain}"
+  domain = var.acm_yourdomain
 }
 
 resource "aws_lb_target_group" "lb-tg-identifier" {
   name     = "lb-tg-identifier"
   port     = 80
   protocol = "HTTP"
-  vpc_id   = "${var.vpc_identifier_id}"
+  vpc_id   = var.vpc_identifier_id
 }
 
 resource "aws_lb" "lb-identifier" {
   name               = "lb-identifier"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = ["${aws_security_group.sg-identifier-lb.id}"]
-  subnets            = ["${var.subnet_identifier_lb_a_id}", "${var.subnet_identifier_lb_c_id}"]
+  security_groups    = [aws_security_group.sg-identifier-lb.id]
+  subnets            = [var.subnet_identifier_lb_a_id, var.subnet_identifier_lb_c_id]
 
   tags = {
     Name = "lb-identifier"
@@ -23,12 +23,12 @@ resource "aws_lb" "lb-identifier" {
 }
 
 resource "aws_lb_listener_certificate" "lnc-identifier" {
-  listener_arn    = "${aws_lb_listener.ln-identifier.arn}"
-  certificate_arn = "${data.aws_acm_certificate.acm_yourdomain.arn}"
+  listener_arn    = aws_lb_listener.ln-identifier.arn
+  certificate_arn = data.aws_acm_certificate.acm_yourdomain.arn
 }
 
 resource "aws_lb_listener" "ln-identifier-http" {
-  load_balancer_arn = "${aws_lb.lb-identifier.arn}"
+  load_balancer_arn = aws_lb.lb-identifier.arn
   port              = "80"
   protocol          = "HTTP"
 
@@ -44,22 +44,22 @@ resource "aws_lb_listener" "ln-identifier-http" {
 }
 
 resource "aws_lb_listener" "ln-identifier" {
-  load_balancer_arn = "${aws_lb.lb-identifier.arn}"
+  load_balancer_arn = aws_lb.lb-identifier.arn
   port              = "443"
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-2016-08"
-  certificate_arn   = "${data.aws_acm_certificate.acm_yourdomain.arn}"
+  certificate_arn   = data.aws_acm_certificate.acm_yourdomain.arn
 
   default_action {
     type             = "forward"
-    target_group_arn = "${aws_lb_target_group.lb-tg-identifier.arn}"
+    target_group_arn = aws_lb_target_group.lb-tg-identifier.arn
   }
 }
 
 resource "aws_security_group" "sg-identifier-lb" {
   name        = "identifier-lb"
   description = "Allow all https inbound traffic"
-  vpc_id      = "${var.vpc_identifier_id}"
+  vpc_id      = var.vpc_identifier_id
   tags = {
     Name = "identifier-lb"
   }

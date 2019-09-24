@@ -11,22 +11,22 @@ data "aws_ami" "ubuntu" {
     values = ["hvm"]
   }
 
-  owners = ["${var.ami_ower_account_id}"]
+  owners = [var.ami_ower_account_id]
 }
 
 data "aws_iam_instance_profile" "instance_profile_identifier_ap" {
-  name = "${var.instance_profile_identifier_ap}"
+  name = var.instance_profile_identifier_ap
 }
 
 resource "aws_launch_configuration" "lc-identifier" {
   name                 = "lc-identifier-${var.ami_name}"
-  image_id             = "${data.aws_ami.ubuntu.id}"
-  instance_type        = "${var.instance_type}"
-  key_name             = "${var.key_name}"
-  security_groups      = ["${aws_security_group.sg-identifier-ap.id}"]
+  image_id             = data.aws_ami.ubuntu.id
+  instance_type        = var.instance_type
+  key_name             = var.key_name
+  security_groups      = [aws_security_group.sg-identifier-ap.id]
   ebs_optimized        = true
-  iam_instance_profile = "${data.aws_iam_instance_profile.instance_profile_identifier_ap.arn}"
-  spot_price           = "${var.spot_price}"
+  iam_instance_profile = data.aws_iam_instance_profile.instance_profile_identifier_ap.arn
+  spot_price           = var.spot_price
 
   lifecycle {
     create_before_destroy = true
@@ -34,12 +34,12 @@ resource "aws_launch_configuration" "lc-identifier" {
 }
 
 data "aws_sns_topic" "sns_topic" {
-  name = "${var.sns_topic_name}"
+  name = var.sns_topic_name
 }
 
 resource "aws_autoscaling_group" "as-identifier" {
   name                      = "as-identifier-${var.ami_name}"
-  launch_configuration      = "${aws_launch_configuration.lc-identifier.name}"
+  launch_configuration      = aws_launch_configuration.lc-identifier.name
   min_size                  = var.min_size
   max_size                  = var.max_size
   desired_capacity          = var.desired_capacity
@@ -48,11 +48,11 @@ resource "aws_autoscaling_group" "as-identifier" {
   force_delete              = true
 
   vpc_zone_identifier = [
-    "${var.subnet_identifier_ap_a_id}",
-    "${var.subnet_identifier_ap_c_id}",
+    var.subnet_identifier_ap_a_id,
+    var.subnet_identifier_ap_c_id,
   ]
 
-  target_group_arns = ["${var.lb_tg_identifier_arn}"]
+  target_group_arns = [var.lb_tg_identifier_arn]
 
   tags = [{
       key                 = "Name"
@@ -102,7 +102,7 @@ EOF
 
 resource "aws_iam_role_policy" "lifecycle_hook_autoscaling_policy_identifier" {
   name = "lifecycle_hook_autoscaling_policy_identifier"
-  role = "${aws_iam_role.autoscaling_role_identifier.id}"
+  role = aws_iam_role.autoscaling_role_identifier.id
 
   policy = <<EOF
 {
@@ -126,9 +126,9 @@ EOF
 
 resource "aws_autoscaling_lifecycle_hook" "asg_hook_identifier" {
   name                    = "asg_hook_identifier"
-  autoscaling_group_name  = "${aws_autoscaling_group.as-identifier.name}"
-  notification_target_arn = "${aws_sqs_queue.graceful_termination_queue_identifier.arn}"
-  role_arn                = "${aws_iam_role.autoscaling_role_identifier.arn}"
+  autoscaling_group_name  = aws_autoscaling_group.as-identifier.name
+  notification_target_arn = aws_sqs_queue.graceful_termination_queue_identifier.arn
+  role_arn                = aws_iam_role.autoscaling_role_identifier.arn
   default_result          = "ABANDON"
   heartbeat_timeout       = 300
   lifecycle_transition    = "autoscaling:EC2_INSTANCE_TERMINATING"
@@ -139,12 +139,12 @@ resource "aws_autoscaling_policy" "asg_policy_identifier" {
   scaling_adjustment     = 4
   adjustment_type        = "ChangeInCapacity"
   cooldown               = 300
-  autoscaling_group_name = "${aws_autoscaling_group.as-identifier.name}"
+  autoscaling_group_name = aws_autoscaling_group.as-identifier.name
 }
 
 resource "aws_autoscaling_notification" "asg_notification_identifier" {
   group_names = [
-    "${aws_autoscaling_group.as-identifier.name}",
+    aws_autoscaling_group.as-identifier.name,
   ]
 
   notifications = [
@@ -154,13 +154,13 @@ resource "aws_autoscaling_notification" "asg_notification_identifier" {
     "autoscaling:EC2_INSTANCE_TERMINATE_ERROR",
   ]
 
-  topic_arn = "${data.aws_sns_topic.sns_topic.arn}"
+  topic_arn = data.aws_sns_topic.sns_topic.arn
 }
 
 resource "aws_security_group" "sg-identifier-ap" {
   name        = "identifier-ap"
   description = "Allow all https inbound traffic"
-  vpc_id      = "${var.vpc_identifier_id}"
+  vpc_id      = var.vpc_identifier_id
   tags = {
     Name = "identifier-ap"
   }
@@ -183,4 +183,3 @@ resource "aws_security_group_rule" "sg-identifier-all-egress" {
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = aws_security_group.sg-identifier-ap.id
 }
-
