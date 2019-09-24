@@ -5,6 +5,7 @@ terraform {
 }
 
 variable "s3_bucket_name" {}
+variable "vpc_id" {}
 
 data "terraform_remote_state" "network" {
   backend = "s3"
@@ -27,7 +28,7 @@ provider "aws" {
 resource "aws_security_group" "sg-identifier-lb" {
   name        = "identifier-lb"
   description = "Allow all https inbound traffic"
-  vpc_id      = data.terraform_remote_state.network.outputs.vpc_id
+  vpc_id      = var.vpc_id
   tags = {
     Name = "identifier-lb"
   }
