@@ -76,12 +76,12 @@ resource "aws_autoscaling_group" "as-identifier" {
   }
 }
 
-resource "aws_sqs_queue" "graceful_termination_queue" {
-  name = "graceful_termination_queue"
+resource "aws_sqs_queue" "graceful_termination_queue_identifier" {
+  name = "graceful_termination_queue_identifier"
 }
 
-resource "aws_iam_role" "autoscaling_role" {
-  name = "autoscaling_role"
+resource "aws_iam_role" "autoscaling_role_identifier" {
+  name = "autoscaling_role_identifier"
 
   assume_role_policy = <<EOF
 {
@@ -100,9 +100,9 @@ resource "aws_iam_role" "autoscaling_role" {
 EOF
 }
 
-resource "aws_iam_role_policy" "lifecycle_hook_autoscaling_policy" {
-  name = "lifecycle_hook_autoscaling_policy"
-  role = "${aws_iam_role.autoscaling_role.id}"
+resource "aws_iam_role_policy" "lifecycle_hook_autoscaling_policy_identifier" {
+  name = "lifecycle_hook_autoscaling_policy_identifier"
+  role = "${aws_iam_role.autoscaling_role_identifier.id}"
 
   policy = <<EOF
 {
@@ -127,8 +127,8 @@ EOF
 resource "aws_autoscaling_lifecycle_hook" "asg_hook_identifier" {
   name                    = "asg_hook_identifier"
   autoscaling_group_name  = "${aws_autoscaling_group.as-identifier.name}"
-  notification_target_arn = "${aws_sqs_queue.graceful_termination_queue.arn}"
-  role_arn                = "${aws_iam_role.autoscaling_role.arn}"
+  notification_target_arn = "${aws_sqs_queue.graceful_termination_queue_identifier.arn}"
+  role_arn                = "${aws_iam_role.autoscaling_role_identifier.arn}"
   default_result          = "ABANDON"
   heartbeat_timeout       = 300
   lifecycle_transition    = "autoscaling:EC2_INSTANCE_TERMINATING"
@@ -142,7 +142,7 @@ resource "aws_autoscaling_policy" "asg_policy_identifier" {
   autoscaling_group_name = "${aws_autoscaling_group.as-identifier.name}"
 }
 
-resource "aws_autoscaling_notification" "asg_notification" {
+resource "aws_autoscaling_notification" "asg_notification_identifier" {
   group_names = [
     "${aws_autoscaling_group.as-identifier.name}",
   ]
