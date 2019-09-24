@@ -29,7 +29,7 @@ resource "aws_lb" "lb-identifier" {
   security_groups    = ["${aws_security_group.sg-identifier-lb.id}"]
   subnets            = ["${data.aws_subnet.subnet_identifier_lb_a.id}", "${data.aws_subnet.subnet_identifier_lb_c.id}"]
 
-  tags {
+  tags = {
     Name = "lb-identifier"
   }
 }
