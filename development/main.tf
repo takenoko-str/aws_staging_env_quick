@@ -29,3 +29,17 @@ module "module_alb" {
   source = "../modules/alb"
 }
 
+module "module_autoscaling" {
+  vpc_identifier = "${module.module_vpc.vpc_identifier_id}"
+  subnet_identifier_ap_a = "${module.module_vpc.subnet_identifier_ap_a_id}"
+  subnet_identifier_ap_c = "${module.module_vpc.subnet_identifier_ap_c_id}"
+  lb_tg_identifier_arn = "${module.module_alb.lb_tg_identifier_arn}"
+  instance_profile_identifier_ap = "${var.instance_profile_identifier_ap}"
+  ami_ower_account_id = "${var.ami_ower_account_id}"
+  sns_topic_arn = "${var.sns_topic_arn}"
+  instance_type = "${var.instance_type}"
+  ami_name = "${var.ami_name}"
+  key_name = "${var.key_name}"
+  source = "../modules/autoscaling"
+}
+
