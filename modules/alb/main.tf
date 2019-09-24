@@ -75,7 +75,7 @@ resource "aws_lb_listener" "ln-identifier" {
 resource "aws_security_group" "sg-identifier-lb" {
   name        = "identifier-lb"
   description = "Allow all https inbound traffic"
-  vpc_id      = data.terraform_remote_state.network.outputs.vpc_id
+  vpc_id      = "${data.aws_vpc.vpc_identifier.id}"
   tags = {
     Name = "identifier-lb"
   }
