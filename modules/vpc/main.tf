@@ -1,13 +1,3 @@
-terraform {
-  backend "s3" {
-    region = "ap-northeast-1"
-  }
-}
-
-provider "aws" {
-  region = "ap-northeast-1"
-}
-
 resource "aws_vpc" "vpc-identifier" {
   cidr_block           = "${var.vpc_identifier_cidr_block}"
   enable_dns_hostnames = true

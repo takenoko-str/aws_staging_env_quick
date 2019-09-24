@@ -11,10 +11,6 @@ data "aws_subnet" "subnet_identifier_lb_a" {
   id = "${var.subnet_identifier_lb_a}"
 }
 
-data "aws_security_group" "sg_identifier_lb" {
-  id = "${var.sg_identifier_lb}"
-}
-
 data "aws_vpc" "vpc_identifier" {
   id = "${var.vpc_identifier}"
 }
@@ -30,7 +26,7 @@ resource "aws_lb" "lb-identifier" {
   name               = "lb-identifier"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = ["${data.aws_security_group.sg_identifier_lb.id}"]
+  security_groups    = ["${aws_security_group.sg-identifier-lb.id}"]
   subnets            = ["${data.aws_subnet.subnet_identifier_lb_a.id}", "${data.aws_subnet.subnet_identifier_lb_c.id}"]
 
   tags {
