@@ -1,0 +1,10 @@
+variable "acm_yourdomain" {}
+variable "vpc_identifier_cidr_block" {}
+variable "rtb_identifier_lb_cidr_block" {}
+variable "rtb_identifier_ap_cidr_block" {}
+variable "subnet_identifier_lb_a_cidr_block" {}
+variable "subnet_identifier_lb_c_cidr_block" {}
+variable "subnet_identifier_ap_a_cidr_block" {}
+variable "subnet_identifier_ap_c_cidr_block" {}
+variable "subnet_identifier_db_a_cidr_block" {}
+variable "subnet_identifier_db_c_cidr_block" {}
