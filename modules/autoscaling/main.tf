@@ -22,8 +22,8 @@ data "aws_subnet" "subnet_identifier_ap_a" {
   id = "${var.subnet_identifier_ap_a}"
 }
 
-data "aws_security_group" "sg_identifier_ap" {
-  id = "${var.sg_identifier_ap}"
+data "aws_iam_instance_profile" "instance_profile_identifier_ap" {
+  name = "${var.instance_profile_identifier_ap}"
 }
 
 resource "aws_launch_configuration" "lc-identifier" {
@@ -31,9 +31,9 @@ resource "aws_launch_configuration" "lc-identifier" {
   image_id             = "${data.aws_ami.ubuntu.id}"
   instance_type        = "${var.instance_type}"
   key_name             = "${var.key_name}"
-  security_groups      = ["${data.aws_security_group.sg_identifier_ap.id}"]
+  security_groups      = ["${aws_security_group.sg-identifier-ap.id}"]
   ebs_optimized        = true
-  iam_instance_profile = "${var.iam_instance_profile}"
+  iam_instance_profile = "${data.aws_iam_instance_profile.instance_profile_identifier_ap.arn}"
   spot_price           = "0.1"
 
   lifecycle {
@@ -56,25 +56,24 @@ resource "aws_autoscaling_group" "as-identifier" {
     "${data.aws_subnet.subnet_identifier_ap_c.id}",
   ]
 
-  target_group_arns = ["${var.target_group_arn}"]
+  target_group_arns = ["${var.lb_tg_identifier_arn}"]
 
-  tag = {
-    key                 = "Name"
-    value               = "as-identifier-${var.ami_name}"
-    propagate_at_launch = true
-  }
-
-  tag = {
-    key                 = "Environment"
-    value               = "develop"
-    propagate_at_launch = true
-  }
-
-  tag = {
-    key                 = "Type"
-    value               = "API"
-    propagate_at_launch = true
-  }
+  tags = [{
+      key                 = "Name"
+      value               = "as-identifier-${var.ami_name}"
+      propagate_at_launch = true
+    },
+    {
+      key                 = "Environment"
+      value               = "develop"
+      propagate_at_launch = true
+    },
+    {
+      key                 = "Type"
+      value               = "API"
+      propagate_at_launch = true
+    }
+  ]
 
   lifecycle {
     create_before_destroy = true
@@ -161,3 +160,31 @@ resource "aws_autoscaling_notification" "asg_notification" {
 
   topic_arn = "${var.sns_topic_arn}"
 }
+
+resource "aws_security_group" "sg-identifier-ap" {
+  name        = "identifier-ap"
+  description = "Allow all https inbound traffic"
+  vpc_id      = "${var.vpc_identifier}"
+  tags = {
+    Name = "identifier-ap"
+  }
+}
+
+resource "aws_security_group_rule" "sg-identifier-ap-http-ingress" {
+  type              = "ingress"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.sg-identifier-ap.id
+}
+
+resource "aws_security_group_rule" "sg-identifier-all-egress" {
+  type              = "egress"
+  to_port           = 0
+  protocol          = "-1"
+  from_port         = 0
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.sg-identifier-ap.id
+}
+

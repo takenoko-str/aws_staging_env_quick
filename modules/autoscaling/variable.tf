@@ -1,0 +1,10 @@
+variable "vpc_identifier" {}
+variable "subnet_identifier_ap_a" {}
+variable "subnet_identifier_ap_c" {}
+variable "instance_profile_identifier_ap" {}
+variable "ami_ower_account_id" {}
+variable "lb_tg_identifier_arn" {}
+variable "sns_topic_arn" {}
+variable "instance_type" {}
+variable "ami_name" {}
+variable "key_name" {}
