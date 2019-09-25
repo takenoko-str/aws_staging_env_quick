@@ -12,3 +12,9 @@ variable "key_name" {}
 variable "min_size" {}
 variable "max_size" {}
 variable "desired_capacity" {}
+variable "cpu_utilization" {
+  default = 40.0
+}
+variable "estimated_warmup_time" {
+  default = "120"
+}

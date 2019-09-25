@@ -1,3 +1,7 @@
+#
+# Configuration for Autoscaling group.
+#
+
 data "aws_ami" "ubuntu" {
   most_recent = true
 
@@ -33,19 +37,57 @@ resource "aws_launch_configuration" "lc-identifier" {
   }
 }
 
+resource "aws_launch_template" "lt-identifier" {
+  image_id               = data.aws_ami.ubuntu.id
+  name                   = "lt-identifier-${var.ami_name}"
+  vpc_security_group_ids = [aws_security_group.sg-identifier-ap.id]
+  key_name               = var.key_name
+  instance_type          = var.instance_type
+  #user_data                   = "${base64encode(element(data.template_file.userdata.*.rendered, count.index))}"
+  iam_instance_profile {
+    name = data.aws_iam_instance_profile.instance_profile_identifier_ap.arn
+  }
+  monitoring {
+    enabled = true
+  }
+  ebs_optimized = true
+
+  block_device_mappings {
+    device_name = "/dev/sda1"
+    ebs {
+      volume_size = 20
+    }
+  }
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
 data "aws_sns_topic" "sns_topic" {
   name = var.sns_topic_name
 }
 
-resource "aws_autoscaling_group" "as-identifier" {
-  name                      = "as-identifier-${var.ami_name}"
-  launch_configuration      = aws_launch_configuration.lc-identifier.name
+resource "aws_autoscaling_group" "asg-identifier" {
+  name                      = "asg-identifier-${var.ami_name}"
   min_size                  = var.min_size
   max_size                  = var.max_size
   desired_capacity          = var.desired_capacity
   health_check_grace_period = 300
   health_check_type         = "ELB"
   force_delete              = true
+  mixed_instances_policy {
+    instances_distribution {
+      on_demand_percentage_above_base_capacity = 100
+      spot_allocation_strategy                 = "lowest-price"
+      spot_instance_pools                      = 5
+    }
+    launch_template {
+      launch_template_specification {
+        launch_template_id = aws_launch_template.lt-identifier.id
+        version            = "$$Latest"
+      }
+    }
+  }
 
   vpc_zone_identifier = [
     var.subnet_identifier_ap_a_id,
@@ -55,9 +97,9 @@ resource "aws_autoscaling_group" "as-identifier" {
   target_group_arns = [var.lb_tg_identifier_arn]
 
   tags = [{
-      key                 = "Name"
-      value               = "as-identifier-${var.ami_name}"
-      propagate_at_launch = true
+    key                 = "Name"
+    value               = "asg-identifier-${var.ami_name}"
+    propagate_at_launch = true
     },
     {
       key                 = "Environment"
@@ -126,7 +168,7 @@ EOF
 
 resource "aws_autoscaling_lifecycle_hook" "asg_hook_identifier" {
   name                    = "asg_hook_identifier"
-  autoscaling_group_name  = aws_autoscaling_group.as-identifier.name
+  autoscaling_group_name  = aws_autoscaling_group.asg-identifier.name
   notification_target_arn = aws_sqs_queue.graceful_termination_queue_identifier.arn
   role_arn                = aws_iam_role.autoscaling_role_identifier.arn
   default_result          = "ABANDON"
@@ -135,16 +177,21 @@ resource "aws_autoscaling_lifecycle_hook" "asg_hook_identifier" {
 }
 
 resource "aws_autoscaling_policy" "asg_policy_identifier" {
-  name                   = "asg_policy_identifier"
-  scaling_adjustment     = 4
-  adjustment_type        = "ChangeInCapacity"
-  cooldown               = 300
-  autoscaling_group_name = aws_autoscaling_group.as-identifier.name
+  name        = "asg_policy_identifier"
+  policy_type = "TargetTrackingScaling"
+  target_tracking_configuration {
+    predefined_metric_specification {
+      predefined_metric_type = "ASGAverageCPUUtilization"
+    }
+    target_value = var.cpu_utilization
+  }
+  estimated_instance_warmup = var.estimated_warmup_time
+  autoscaling_group_name    = aws_autoscaling_group.asg-identifier.name
 }
 
 resource "aws_autoscaling_notification" "asg_notification_identifier" {
   group_names = [
-    aws_autoscaling_group.as-identifier.name,
+    aws_autoscaling_group.asg-identifier.name,
   ]
 
   notifications = [
