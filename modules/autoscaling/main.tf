@@ -45,7 +45,7 @@ resource "aws_launch_template" "lt-identifier" {
   instance_type          = var.instance_type
   #user_data                   = "${base64encode(element(data.template_file.userdata.*.rendered, count.index))}"
   iam_instance_profile {
-    name = data.aws_iam_instance_profile.instance_profile_identifier_ap.arn
+    name = var.instance_profile_identifier_ap
   }
   monitoring {
     enabled = true
@@ -72,7 +72,7 @@ resource "aws_autoscaling_group" "asg-identifier" {
   min_size                  = var.min_size
   max_size                  = var.max_size
   desired_capacity          = var.desired_capacity
-  health_check_grace_period = 300
+  health_check_grace_period = 600
   health_check_type         = "ELB"
   force_delete              = true
   mixed_instances_policy {
@@ -83,8 +83,7 @@ resource "aws_autoscaling_group" "asg-identifier" {
     }
     launch_template {
       launch_template_specification {
-        launch_template_id = aws_launch_template.lt-identifier.id
-        version            = "$$Latest"
+        launch_template_name = aws_launch_template.lt-identifier.name
       }
     }
   }

@@ -8,6 +8,14 @@ resource "aws_lb_target_group" "lb-tg-identifier" {
   port     = 80
   protocol = "HTTP"
   vpc_id   = var.vpc_identifier_id
+  health_check {
+    path                = var.health_check_path
+    healthy_threshold   = 5
+    unhealthy_threshold = 2
+    timeout             = 5
+    interval            = 30
+    matcher             = var.health_check_status_code
+  }
 }
 
 resource "aws_lb" "lb-identifier" {

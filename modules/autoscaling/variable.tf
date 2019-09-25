@@ -16,5 +16,5 @@ variable "cpu_utilization" {
   default = 40.0
 }
 variable "estimated_warmup_time" {
-  default = "120"
+  default = "360"
 }
