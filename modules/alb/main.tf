@@ -1,6 +1,7 @@
 data "aws_acm_certificate" "acm_yourdomain" {
   types  = ["AMAZON_ISSUED"]
   domain = var.acm_yourdomain
+  most_recent = true
 }
 
 resource "aws_lb_target_group" "lb-tg-identifier" {
