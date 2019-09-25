@@ -16,5 +16,8 @@ variable "cpu_utilization" {
   default = 40.0
 }
 variable "estimated_warmup_time" {
+  default = "400"
+}
+variable "health_check_period" {
   default = "360"
 }

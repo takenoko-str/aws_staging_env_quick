@@ -72,7 +72,7 @@ resource "aws_autoscaling_group" "asg-identifier" {
   min_size                  = var.min_size
   max_size                  = var.max_size
   desired_capacity          = var.desired_capacity
-  health_check_grace_period = 600
+  health_check_grace_period = var.health_check_period
   health_check_type         = "ELB"
   force_delete              = true
   mixed_instances_policy {
