@@ -29,6 +29,9 @@ $ terraform plan -var-file=config.tfvars
 
 $ terraform apply -var-file=config.tfvars
 
+# 特定のモジュールを展開する
+$ terraform apply -target module.module_autoscaling -var-file=config.tfvars
+
 # 特定のモジュールを消す
 $ terraform destroy -target module.module_autoscaling -var-file=config.tfvars
 ```
