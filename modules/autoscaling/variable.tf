@@ -29,5 +29,8 @@ variable "estimated_warmup_time" {
   default = "400"
 }
 variable "health_check_period" {
+  default = 30
+}
+variable "heartbeat_timeout" {
   default = "360"
 }

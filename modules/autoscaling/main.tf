@@ -22,6 +22,11 @@ data "aws_iam_instance_profile" "instance_profile_identifier_ap" {
   name = var.instance_profile_identifier_ap
 }
 
+resource "aws_placement_group" "this" {
+  name     = "pg-identifier-cluster"
+  strategy = "cluster"
+}
+
 resource "aws_launch_configuration" "lc-identifier" {
   name                 = "lc-identifier-${var.ami_name}"
   image_id             = data.aws_ami.ubuntu.id
@@ -75,6 +80,9 @@ resource "aws_autoscaling_group" "asg-identifier" {
   health_check_grace_period = var.health_check_period
   health_check_type         = "ELB"
   force_delete              = true
+  default_cooldown          = var.estimated_warmup_time
+  metrics_granularity       = "1Minute"
+  placement_group           = aws_placement_group.this.id
   mixed_instances_policy {
     instances_distribution {
       on_demand_percentage_above_base_capacity = 100
@@ -171,7 +179,7 @@ resource "aws_autoscaling_lifecycle_hook" "asg_hook_identifier" {
   notification_target_arn = aws_sqs_queue.graceful_termination_queue_identifier.arn
   role_arn                = aws_iam_role.autoscaling_role_identifier.arn
   default_result          = "ABANDON"
-  heartbeat_timeout       = 300
+  heartbeat_timeout       = var.heartbeat_timeout
   lifecycle_transition    = "autoscaling:EC2_INSTANCE_TERMINATING"
 }
 
