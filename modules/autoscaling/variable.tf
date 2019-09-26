@@ -5,13 +5,23 @@ variable "instance_profile_identifier_ap" {}
 variable "ami_ower_account_id" {}
 variable "lb_tg_identifier_arn" {}
 variable "sns_topic_name" {}
-variable "instance_type" {}
-variable "spot_price" {}
 variable "ami_name" {}
 variable "key_name" {}
-variable "min_size" {}
-variable "max_size" {}
-variable "desired_capacity" {}
+variable "spot_price" {
+  default = "0.1"
+}
+variable "min_size" {
+  default = 0
+}
+variable "max_size" {
+  default = 6
+}
+variable "instance_type" {
+  default = "m5.large"
+}
+variable "desired_capacity" {
+  default = 1
+}
 variable "cpu_utilization" {
   default = 40.0
 }
