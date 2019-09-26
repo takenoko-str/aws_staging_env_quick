@@ -1,0 +1,8 @@
+#ALB
+acm_yourdomain=""
+#ASG
+instance_profile_identifier_ap = ""
+ami_ower_account_id = ""
+sns_topic_name = ""
+ami_name = ""
+key_name = ""
