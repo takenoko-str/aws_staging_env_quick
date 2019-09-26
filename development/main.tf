@@ -48,3 +48,14 @@ module "module_autoscaling" {
   source = "../modules/autoscaling"
 }
 
+module "module_ec2" {
+  vpc_identifier_id = module.module_vpc.vpc_identifier_id
+  subnet_identifier_lb_a_id = module.module_vpc.subnet_identifier_lb_a_id
+  subnet_identifier_lb_c_id = module.module_vpc.subnet_identifier_lb_c_id
+  ami_ower_account_id = var.ami_ower_account_id
+  instance_type = var.instance_type
+  ami_name = var.ami_name
+  key_name = var.key_name
+
+  source = "../modules/ec2"
+}
