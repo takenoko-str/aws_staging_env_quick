@@ -83,6 +83,16 @@ resource "aws_autoscaling_group" "asg-identifier" {
   default_cooldown          = var.estimated_warmup_time
   metrics_granularity       = "1Minute"
   placement_group           = aws_placement_group.this.id
+  enabled_metrics           = [
+    "GroupMinSize",
+    "GroupMaxSize",
+    "GroupDesiredCapacity",
+    "GroupInServiceInstances",
+    "GroupPendingInstances",
+    "GroupStandbyInstances",
+    "GroupTerminatingInstances",
+    "GroupTotalInstances"
+  ]
   mixed_instances_policy {
     instances_distribution {
       on_demand_percentage_above_base_capacity = 100

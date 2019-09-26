@@ -26,10 +26,10 @@ variable "cpu_utilization" {
   default = 40.0
 }
 variable "estimated_warmup_time" {
-  default = "400"
+  default = "300"
 }
 variable "health_check_period" {
-  default = 30
+  default = "60"
 }
 variable "heartbeat_timeout" {
   default = "360"
