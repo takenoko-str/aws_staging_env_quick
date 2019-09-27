@@ -7,6 +7,12 @@ variable "lb_tg_identifier_arn" {}
 variable "sns_topic_name" {}
 variable "ami_name" {}
 variable "key_name" {}
+variable "recurrence_start" {
+  default = "0 0 * * *"
+}
+variable "recurrence_stop" {
+  default = "0 9 * * *"
+}
 variable "spot_price" {
   default = "0.1"
 }
@@ -18,6 +24,9 @@ variable "max_size" {
 }
 variable "instance_type" {
   default = "m5.large"
+}
+variable "saved_capacity" {
+  default = 0
 }
 variable "desired_capacity" {
   default = 1

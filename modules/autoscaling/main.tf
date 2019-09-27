@@ -72,6 +72,24 @@ data "aws_sns_topic" "sns_topic" {
   name = var.sns_topic_name
 }
 
+resource "aws_autoscaling_schedule" "up" {
+  scheduled_action_name  = "up"
+  min_size               = var.min_size
+  max_size               = var.max_size
+  desired_capacity       = var.desired_capacity
+  recurrence             = var.recurrence_start
+  autoscaling_group_name = aws_autoscaling_group.asg-identifier.name
+}
+
+resource "aws_autoscaling_schedule" "down" {
+  scheduled_action_name  = "down"
+  min_size               = var.min_size
+  max_size               = var.max_size
+  desired_capacity       = var.saved_capacity
+  recurrence             = var.recurrence_stop
+  autoscaling_group_name = aws_autoscaling_group.asg-identifier.name
+}
+
 resource "aws_autoscaling_group" "asg-identifier" {
   name                      = "asg-identifier-${var.ami_name}"
   min_size                  = var.min_size
