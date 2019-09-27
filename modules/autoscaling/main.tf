@@ -80,7 +80,7 @@ resource "aws_autoscaling_group" "asg-identifier" {
   health_check_grace_period = var.health_check_period
   health_check_type         = "ELB"
   force_delete              = true
-  default_cooldown          = var.estimated_warmup_time
+  default_cooldown          = var.default_cooldown_time
   metrics_granularity       = "1Minute"
   placement_group           = aws_placement_group.this.id
   enabled_metrics           = [

@@ -25,12 +25,15 @@ variable "desired_capacity" {
 variable "cpu_utilization" {
   default = 40.0
 }
-variable "estimated_warmup_time" {
+variable "default_cooldown_time" {
   default = "300"
 }
+variable "estimated_warmup_time" {
+  default = "30"
+}
 variable "health_check_period" {
-  default = "60"
+  default = "300"
 }
 variable "heartbeat_timeout" {
-  default = "360"
+  default = "600"
 }
