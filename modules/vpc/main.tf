@@ -1,5 +1,5 @@
-resource "aws_vpc" "vpc-identifier" {
-  cidr_block           = var.vpc_identifier_cidr_block
+resource "aws_vpc" "this" {
+  cidr_block           = var.vpc_cidr_block
   enable_dns_hostnames = true
 
   tags = {
@@ -7,169 +7,169 @@ resource "aws_vpc" "vpc-identifier" {
   }
 }
 
-resource "aws_internet_gateway" "igw-identifier" {
-  vpc_id = aws_vpc.vpc-identifier.id
+resource "aws_internet_gateway" "this" {
+  vpc_id = aws_vpc.this.id
 
   tags = {
     Name = "igw-identifier"
   }
 }
 
-resource "aws_route_table" "rtb-identifier-lb" {
-  vpc_id = aws_vpc.vpc-identifier.id
+resource "aws_route_table" "lb" {
+  vpc_id = aws_vpc.this.id
 
   route {
-    cidr_block = var.rtb_identifier_lb_cidr_block
-    gateway_id = aws_internet_gateway.igw-identifier.id
+    cidr_block = var.rtb_lb_cidr_block
+    gateway_id = aws_internet_gateway.this.id
   }
 
   tags = {
-    Name = "rtb-identifier-lb"
+    Name = "lb"
   }
 }
 
-resource "aws_route_table" "rtb-identifier-ap" {
-  vpc_id = aws_vpc.vpc-identifier.id
+resource "aws_route_table" "ap" {
+  vpc_id = aws_vpc.this.id
 
   route {
-    cidr_block = var.rtb_identifier_ap_cidr_block
-    nat_gateway_id = aws_nat_gateway.nat-identifier.id
+    cidr_block = var.rtb_ap_cidr_block
+    nat_gateway_id = aws_nat_gateway.this.id
   }
 
   tags = {
-    Name = "rtb-identifier-ap"
+    Name = "ap"
   }
 }
 
-resource "aws_route_table" "rtb-identifier-db" {
-  vpc_id = aws_vpc.vpc-identifier.id
+resource "aws_route_table" "db" {
+  vpc_id = aws_vpc.this.id
 
   tags = {
-    Name = "rtb-identifier-db"
+    Name = "db"
   }
 }
 
-resource "aws_subnet" "subnet-identifier-lb-a" {
-  vpc_id                  = aws_vpc.vpc-identifier.id
-  cidr_block              = var.subnet_identifier_lb_a_cidr_block
+resource "aws_subnet" "lb_a" {
+  vpc_id                  = aws_vpc.this.id
+  cidr_block              = var.subnet_lb_a_cidr_block
   map_public_ip_on_launch = true
   availability_zone       = "ap-northeast-1a"
 
   tags = {
-    Name = "subnet-identifier-lb-a"
+    Name = "lb_a"
   }
 
-  depends_on = ["aws_internet_gateway.igw-identifier"]
+  depends_on = ["aws_internet_gateway.this"]
 }
 
-resource "aws_route_table_association" "rtbassoc-identifier-lb-a" {
-  subnet_id      = aws_subnet.subnet-identifier-lb-a.id
-  route_table_id = aws_route_table.rtb-identifier-lb.id
+resource "aws_route_table_association" "lb_a" {
+  subnet_id      = aws_subnet.lb_a.id
+  route_table_id = aws_route_table.lb.id
 }
 
-resource "aws_subnet" "subnet-identifier-lb-c" {
-  vpc_id                  = aws_vpc.vpc-identifier.id
-  cidr_block              = var.subnet_identifier_lb_c_cidr_block
+resource "aws_subnet" "lb_c" {
+  vpc_id                  = aws_vpc.this.id
+  cidr_block              = var.subnet_lb_c_cidr_block
   map_public_ip_on_launch = true
   availability_zone       = "ap-northeast-1c"
 
   tags = {
-    Name = "subnet-identifier-lb-c"
+    Name = "lb_c"
   }
 
-  depends_on = ["aws_internet_gateway.igw-identifier"]
+  depends_on = ["aws_internet_gateway.this"]
 }
 
-resource "aws_route_table_association" "rtbassoc-identifier-lb-c" {
-  subnet_id      = aws_subnet.subnet-identifier-lb-c.id
-  route_table_id = aws_route_table.rtb-identifier-lb.id
+resource "aws_route_table_association" "lb_c" {
+  subnet_id      = aws_subnet.lb_c.id
+  route_table_id = aws_route_table.lb.id
 }
 
-resource "aws_subnet" "subnet-identifier-ap-a" {
-  vpc_id                  = aws_vpc.vpc-identifier.id
-  cidr_block              = var.subnet_identifier_ap_a_cidr_block
+resource "aws_subnet" "ap_a" {
+  vpc_id                  = aws_vpc.this.id
+  cidr_block              = var.subnet_ap_a_cidr_block
   map_public_ip_on_launch = true
   availability_zone       = "ap-northeast-1a"
 
   tags = {
-    Name = "subnet-identifier-ap-a"
+    Name = "ap_a"
   }
 
-  depends_on = ["aws_internet_gateway.igw-identifier"]
+  depends_on = ["aws_internet_gateway.this"]
 }
 
-resource "aws_route_table_association" "rtbassoc-identifier-ap-a" {
-  subnet_id      = aws_subnet.subnet-identifier-ap-a.id
-  route_table_id = aws_route_table.rtb-identifier-ap.id
+resource "aws_route_table_association" "ap_a" {
+  subnet_id      = aws_subnet.ap_a.id
+  route_table_id = aws_route_table.ap.id
 }
 
-resource "aws_subnet" "subnet-identifier-ap-c" {
-  vpc_id                  = aws_vpc.vpc-identifier.id
-  cidr_block              = var.subnet_identifier_ap_c_cidr_block
+resource "aws_subnet" "ap_c" {
+  vpc_id                  = aws_vpc.this.id
+  cidr_block              = var.subnet_ap_c_cidr_block
   map_public_ip_on_launch = true
   availability_zone       = "ap-northeast-1c"
 
   tags = {
-    Name = "subnet-identifier-ap-c"
+    Name = "ap_c"
   }
 
-  depends_on = ["aws_internet_gateway.igw-identifier"]
+  depends_on = ["aws_internet_gateway.this"]
 }
 
-resource "aws_route_table_association" "rtbassoc-identifier-ap-c" {
-  subnet_id      = aws_subnet.subnet-identifier-ap-c.id
-  route_table_id = aws_route_table.rtb-identifier-ap.id
+resource "aws_route_table_association" "ap_c" {
+  subnet_id      = aws_subnet.ap_c.id
+  route_table_id = aws_route_table.ap.id
 }
 
-resource "aws_subnet" "subnet-identifier-db-a" {
-  vpc_id                  = aws_vpc.vpc-identifier.id
-  cidr_block              = var.subnet_identifier_db_a_cidr_block
+resource "aws_subnet" "db_a" {
+  vpc_id                  = aws_vpc.this.id
+  cidr_block              = var.subnet_db_a_cidr_block
   map_public_ip_on_launch = true
   availability_zone       = "ap-northeast-1a"
 
   tags = {
-    Name = "subnet-identifier-db-a"
+    Name = "db_a"
   }
 
-  depends_on = ["aws_internet_gateway.igw-identifier"]
+  depends_on = ["aws_internet_gateway.this"]
 }
 
-resource "aws_route_table_association" "rtbassoc-identifier-db-a" {
-  subnet_id      = aws_subnet.subnet-identifier-db-a.id
-  route_table_id = aws_route_table.rtb-identifier-db.id
+resource "aws_route_table_association" "db_a" {
+  subnet_id      = aws_subnet.db_a.id
+  route_table_id = aws_route_table.db.id
 }
 
-resource "aws_subnet" "subnet-identifier-db-c" {
-  vpc_id                  = aws_vpc.vpc-identifier.id
-  cidr_block              = var.subnet_identifier_db_c_cidr_block
+resource "aws_subnet" "db_c" {
+  vpc_id                  = aws_vpc.this.id
+  cidr_block              = var.subnet_db_c_cidr_block
   map_public_ip_on_launch = true
   availability_zone       = "ap-northeast-1c"
 
   tags = {
-    Name = "subnet-identifier-db-c"
+    Name = "db_c"
   }
 
-  depends_on = ["aws_internet_gateway.igw-identifier"]
+  depends_on = ["aws_internet_gateway.this"]
 }
 
-resource "aws_route_table_association" "rtbassoc-identifier-db-c" {
-  subnet_id      = aws_subnet.subnet-identifier-db-c.id
-  route_table_id = aws_route_table.rtb-identifier-db.id
+resource "aws_route_table_association" "db_c" {
+  subnet_id      = aws_subnet.db_c.id
+  route_table_id = aws_route_table.db.id
 }
 
 resource "aws_eip" "eip-identifier-nat" {
   vpc        = true
-  depends_on = ["aws_internet_gateway.igw-identifier"]
+  depends_on = ["aws_internet_gateway.this"]
 }
 
-resource "aws_nat_gateway" "nat-identifier" {
+resource "aws_nat_gateway" "this" {
   allocation_id = aws_eip.eip-identifier-nat.id
-  subnet_id     = aws_subnet.subnet-identifier-lb-a.id
+  subnet_id     = aws_subnet.lb_a.id
 
   tags = {
-    Name = "eip-identifier-nat"
+    Name = "nat"
   }
 
-  depends_on = ["aws_internet_gateway.igw-identifier"]
+  depends_on = ["aws_internet_gateway.this"]
 }
 

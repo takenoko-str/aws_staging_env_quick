@@ -1,17 +1,17 @@
 #VPC
-variable "vpc_identifier_cidr_block" {}
-variable "rtb_identifier_lb_cidr_block" {}
-variable "rtb_identifier_ap_cidr_block" {}
-variable "subnet_identifier_lb_a_cidr_block" {}
-variable "subnet_identifier_lb_c_cidr_block" {}
-variable "subnet_identifier_ap_a_cidr_block" {}
-variable "subnet_identifier_ap_c_cidr_block" {}
-variable "subnet_identifier_db_a_cidr_block" {}
-variable "subnet_identifier_db_c_cidr_block" {}
+variable "vpc_cidr_block" {}
+variable "rtb_lb_cidr_block" {}
+variable "rtb_ap_cidr_block" {}
+variable "subnet_lb_a_cidr_block" {}
+variable "subnet_lb_c_cidr_block" {}
+variable "subnet_ap_a_cidr_block" {}
+variable "subnet_ap_c_cidr_block" {}
+variable "subnet_db_a_cidr_block" {}
+variable "subnet_db_c_cidr_block" {}
 #ALB
 variable "acm_yourdomain" {}
 #ASG
-variable "instance_profile_identifier_ap" {}
+variable "instance_profile_ap" {}
 variable "ami_ower_account_id" {}
 variable "sns_topic_name" {}
 variable "instance_type" {}

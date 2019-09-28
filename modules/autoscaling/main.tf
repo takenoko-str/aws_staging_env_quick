@@ -2,7 +2,7 @@
 # Configuration for Autoscaling group.
 #
 
-data "aws_ami" "ubuntu" {
+data "aws_ami" "this" {
   most_recent = true
 
   filter {
@@ -18,8 +18,8 @@ data "aws_ami" "ubuntu" {
   owners = [var.ami_ower_account_id]
 }
 
-data "aws_iam_instance_profile" "instance_profile_identifier_ap" {
-  name = var.instance_profile_identifier_ap
+data "aws_iam_instance_profile" "ap" {
+  name = var.instance_profile_ap
 }
 
 resource "aws_placement_group" "this" {
@@ -27,14 +27,14 @@ resource "aws_placement_group" "this" {
   strategy = "cluster"
 }
 
-resource "aws_launch_configuration" "lc-identifier" {
-  name                 = "lc-identifier-${var.ami_name}"
-  image_id             = data.aws_ami.ubuntu.id
+resource "aws_launch_configuration" "this" {
+  name                 = "lc-${var.ami_name}"
+  image_id             = data.aws_ami.this.id
   instance_type        = var.instance_type
   key_name             = var.key_name
-  security_groups      = [aws_security_group.sg-identifier-ap.id]
+  security_groups      = [aws_security_group.ap.id]
   ebs_optimized        = true
-  iam_instance_profile = data.aws_iam_instance_profile.instance_profile_identifier_ap.arn
+  iam_instance_profile = data.aws_iam_instance_profile.ap.arn
   spot_price           = var.spot_price
 
   lifecycle {
@@ -42,15 +42,15 @@ resource "aws_launch_configuration" "lc-identifier" {
   }
 }
 
-resource "aws_launch_template" "lt-identifier" {
-  image_id               = data.aws_ami.ubuntu.id
-  name                   = "lt-identifier-${var.ami_name}"
-  vpc_security_group_ids = [aws_security_group.sg-identifier-ap.id]
+resource "aws_launch_template" "this" {
+  image_id               = data.aws_ami.this.id
+  name                   = "lt-${var.ami_name}"
+  vpc_security_group_ids = [aws_security_group.ap.id]
   key_name               = var.key_name
   instance_type          = var.instance_type
   #user_data                   = "${base64encode(element(data.template_file.userdata.*.rendered, count.index))}"
   iam_instance_profile {
-    name = var.instance_profile_identifier_ap
+    name = var.instance_profile_ap
   }
   monitoring {
     enabled = true
@@ -68,7 +68,7 @@ resource "aws_launch_template" "lt-identifier" {
   }
 }
 
-data "aws_sns_topic" "sns_topic" {
+data "aws_sns_topic" "this" {
   name = var.sns_topic_name
 }
 
@@ -78,7 +78,7 @@ resource "aws_autoscaling_schedule" "up" {
   max_size               = var.max_size
   desired_capacity       = var.desired_capacity
   recurrence             = var.recurrence_start
-  autoscaling_group_name = aws_autoscaling_group.asg-identifier.name
+  autoscaling_group_name = aws_autoscaling_group.ap.name
 }
 
 resource "aws_autoscaling_schedule" "down" {
@@ -87,15 +87,15 @@ resource "aws_autoscaling_schedule" "down" {
   max_size               = var.max_size
   desired_capacity       = var.saved_capacity
   recurrence             = var.recurrence_stop
-  autoscaling_group_name = aws_autoscaling_group.asg-identifier.name
+  autoscaling_group_name = aws_autoscaling_group.ap.name
 }
 
-resource "aws_autoscaling_group" "asg-identifier" {
-  name                      = "asg-identifier-${var.ami_name}"
+resource "aws_autoscaling_group" "ap" {
+  name                      = "identifier-${var.ami_name}"
   min_size                  = var.min_size
   max_size                  = var.max_size
   desired_capacity          = var.desired_capacity
-  health_check_grace_period = var.health_check_period
+  health_check_grace_period = var.health_check_grace_period
   health_check_type         = "ELB"
   force_delete              = true
   default_cooldown          = var.default_cooldown_time
@@ -119,21 +119,21 @@ resource "aws_autoscaling_group" "asg-identifier" {
     }
     launch_template {
       launch_template_specification {
-        launch_template_name = aws_launch_template.lt-identifier.name
+        launch_template_name = aws_launch_template.this.name
       }
     }
   }
 
   vpc_zone_identifier = [
-    var.subnet_identifier_ap_a_id,
-    var.subnet_identifier_ap_c_id,
+    var.subnet_ap_a_id,
+    var.subnet_ap_c_id,
   ]
 
-  target_group_arns = [var.lb_tg_identifier_arn]
+  target_group_arns = [var.lb_tg_arn]
 
   tags = [{
     key                 = "Name"
-    value               = "asg-identifier-${var.ami_name}"
+    value               = "identifier-${var.ami_name}"
     propagate_at_launch = true
     },
     {
@@ -153,11 +153,11 @@ resource "aws_autoscaling_group" "asg-identifier" {
   }
 }
 
-resource "aws_sqs_queue" "graceful_termination_queue_identifier" {
-  name = "graceful_termination_queue_identifier"
+resource "aws_sqs_queue" "this" {
+  name = "identifier"
 }
 
-resource "aws_iam_role" "autoscaling_role_identifier" {
+resource "aws_iam_role" "this" {
   name = "autoscaling_role_identifier"
 
   assume_role_policy = <<EOF
@@ -177,9 +177,9 @@ resource "aws_iam_role" "autoscaling_role_identifier" {
 EOF
 }
 
-resource "aws_iam_role_policy" "lifecycle_hook_autoscaling_policy_identifier" {
+resource "aws_iam_role_policy" "this" {
   name = "lifecycle_hook_autoscaling_policy_identifier"
-  role = aws_iam_role.autoscaling_role_identifier.id
+  role = aws_iam_role.this.id
 
   policy = <<EOF
 {
@@ -201,17 +201,17 @@ resource "aws_iam_role_policy" "lifecycle_hook_autoscaling_policy_identifier" {
 EOF
 }
 
-resource "aws_autoscaling_lifecycle_hook" "asg_hook_identifier" {
-  name                    = "asg_hook_identifier"
-  autoscaling_group_name  = aws_autoscaling_group.asg-identifier.name
-  notification_target_arn = aws_sqs_queue.graceful_termination_queue_identifier.arn
-  role_arn                = aws_iam_role.autoscaling_role_identifier.arn
+resource "aws_autoscaling_lifecycle_hook" "this" {
+  name                    = "identifier"
+  autoscaling_group_name  = aws_autoscaling_group.ap.name
+  notification_target_arn = aws_sqs_queue.this.arn
+  role_arn                = aws_iam_role.this.arn
   default_result          = "ABANDON"
   heartbeat_timeout       = var.heartbeat_timeout
   lifecycle_transition    = "autoscaling:EC2_INSTANCE_TERMINATING"
 }
 
-resource "aws_autoscaling_policy" "asg_policy_identifier" {
+resource "aws_autoscaling_policy" "this" {
   name        = "asg_policy_identifier"
   policy_type = "TargetTrackingScaling"
   target_tracking_configuration {
@@ -221,12 +221,12 @@ resource "aws_autoscaling_policy" "asg_policy_identifier" {
     target_value = var.cpu_utilization
   }
   estimated_instance_warmup = var.estimated_warmup_time
-  autoscaling_group_name    = aws_autoscaling_group.asg-identifier.name
+  autoscaling_group_name    = aws_autoscaling_group.ap.name
 }
 
-resource "aws_autoscaling_notification" "asg_notification_identifier" {
+resource "aws_autoscaling_notification" "this" {
   group_names = [
-    aws_autoscaling_group.asg-identifier.name,
+    aws_autoscaling_group.ap.name,
   ]
 
   notifications = [
@@ -236,32 +236,32 @@ resource "aws_autoscaling_notification" "asg_notification_identifier" {
     "autoscaling:EC2_INSTANCE_TERMINATE_ERROR",
   ]
 
-  topic_arn = data.aws_sns_topic.sns_topic.arn
+  topic_arn = data.aws_sns_topic.this.arn
 }
 
-resource "aws_security_group" "sg-identifier-ap" {
+resource "aws_security_group" "ap" {
   name        = "identifier-ap"
   description = "Allow all https inbound traffic"
-  vpc_id      = var.vpc_identifier_id
+  vpc_id      = var.vpc_id
   tags = {
     Name = "identifier-ap"
   }
 }
 
-resource "aws_security_group_rule" "sg-identifier-ap-http-ingress" {
+resource "aws_security_group_rule" "ap-http-ingress" {
   type              = "ingress"
   from_port         = 80
   to_port           = 80
   protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = aws_security_group.sg-identifier-ap.id
+  security_group_id = aws_security_group.ap.id
 }
 
-resource "aws_security_group_rule" "sg-identifier-all-egress" {
+resource "aws_security_group_rule" "all-egress" {
   type              = "egress"
   to_port           = 0
   protocol          = "-1"
   from_port         = 0
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = aws_security_group.sg-identifier-ap.id
+  security_group_id = aws_security_group.ap.id
 }

@@ -1,9 +1,9 @@
-variable "vpc_identifier_id" {}
-variable "subnet_identifier_ap_a_id" {}
-variable "subnet_identifier_ap_c_id" {}
-variable "instance_profile_identifier_ap" {}
+variable "vpc_id" {}
+variable "subnet_ap_a_id" {}
+variable "subnet_ap_c_id" {}
+variable "instance_profile_ap" {}
 variable "ami_ower_account_id" {}
-variable "lb_tg_identifier_arn" {}
+variable "lb_tg_arn" {}
 variable "sns_topic_name" {}
 variable "ami_name" {}
 variable "key_name" {}
@@ -40,7 +40,7 @@ variable "default_cooldown_time" {
 variable "estimated_warmup_time" {
   default = "30"
 }
-variable "health_check_period" {
+variable "health_check_grace_period" {
   default = "300"
 }
 variable "heartbeat_timeout" {

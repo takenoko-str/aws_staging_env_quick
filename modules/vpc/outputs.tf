@@ -1,27 +1,27 @@
-output "vpc_identifier_id" {
-    value = aws_vpc.vpc-identifier.id
+output "vpc_id" {
+    value = aws_vpc.this.id
 }
 
-output "subnet_identifier_lb_a_id" {
-    value = aws_subnet.subnet-identifier-lb-a.id
+output "subnet_lb_a_id" {
+    value = aws_subnet.lb_a.id
 }
 
-output "subnet_identifier_lb_c_id" {
-    value = aws_subnet.subnet-identifier-lb-c.id
+output "subnet_lb_c_id" {
+    value = aws_subnet.lb_c.id
 }
 
-output "subnet_identifier_ap_a_id" {
-    value = aws_subnet.subnet-identifier-ap-a.id
+output "subnet_ap_a_id" {
+    value = aws_subnet.ap_a.id
 }
 
-output "subnet_identifier_ap_c_id" {
-    value = aws_subnet.subnet-identifier-ap-c.id
+output "subnet_ap_c_id" {
+    value = aws_subnet.ap_c.id
 }
 
-output "subnet_identifier_db_a_id" {
-    value = aws_subnet.subnet-identifier-db-a.id
+output "subnet_db_a_id" {
+    value = aws_subnet.db_a.id
 }
 
-output "subnet_identifier_db_c_id" {
-    value = aws_subnet.subnet-identifier-db-c.id
+output "subnet_db_c_id" {
+    value = aws_subnet.db_c.id
 }

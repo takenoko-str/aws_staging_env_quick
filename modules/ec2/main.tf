@@ -2,7 +2,7 @@
 # Security Group
 #
 
-data "aws_ami" "ubuntu" {
+data "aws_ami" "this" {
   most_recent = true
 
   filter {
@@ -20,7 +20,7 @@ data "aws_ami" "ubuntu" {
 
 resource "aws_security_group" "this" {
   name   = "identifier-bastion"
-  vpc_id = var.vpc_identifier_id
+  vpc_id = var.vpc_id
 
   ingress {
     from_port   = 22
@@ -41,12 +41,12 @@ resource "aws_security_group" "this" {
 
 # EC2
 resource "aws_instance" "this" {
-  ami                     = data.aws_ami.ubuntu.id
+  ami                     = data.aws_ami.this.id
   instance_type           = var.instance_type
   disable_api_termination = false
   key_name                = var.key_name
   vpc_security_group_ids  = [aws_security_group.this.id]
-  subnet_id               = var.subnet_identifier_lb_a_id
+  subnet_id               = var.subnet_lb_a_id
 
   tags = {
     Name = "bastion-for-asg"
