@@ -56,6 +56,7 @@ module "ec2" {
   instance_type = var.instance_type
   ami_name = var.ami_name
   key_name = var.key_name
-
+  recurrence_stop = var.recurrence_stop
+  recurrence_start = var.recurrence_start
   source = "../modules/ec2"
 }

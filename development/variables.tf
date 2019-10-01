@@ -21,3 +21,5 @@ variable "spot_price" {}
 variable "min_size" {}
 variable "max_size" {}
 variable "desired_capacity" {}
+variable "recurrence_start" {}
+variable "recurrence_stop" {}

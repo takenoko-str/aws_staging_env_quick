@@ -5,3 +5,5 @@ variable "ami_name" {}
 variable "key_name" {}
 variable "instance_type" {}
 variable "ami_ower_account_id" {}
+variable "recurrence_start" {}
+variable "recurrence_stop" {}
