@@ -1,3 +1,9 @@
+variable "peer_owner_id" {
+    default = ""
+}
+variable "peer_vpc_id" {
+    default = ""
+}
 variable "vpc_cidr_block" {
       default = "10.129.0.0/16"
 }

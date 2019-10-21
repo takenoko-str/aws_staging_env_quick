@@ -9,6 +9,8 @@ provider "aws" {
 }
 
 module "vpc" {
+  peer_owner_id = var.peer_owner_id
+  peer_vpc_id = var.peer_vpc_id
   vpc_cidr_block = var.vpc_cidr_block
   rtb_lb_cidr_block = var.rtb_lb_cidr_block
   rtb_ap_cidr_block = var.rtb_ap_cidr_block

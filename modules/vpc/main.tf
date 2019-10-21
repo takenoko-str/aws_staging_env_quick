@@ -1,3 +1,7 @@
+data "aws_vpc" "sandbox" {
+  id = var.peer_vpc_id
+}
+
 resource "aws_vpc" "this" {
   cidr_block           = var.vpc_cidr_block
   enable_dns_hostnames = true
@@ -12,6 +16,17 @@ resource "aws_internet_gateway" "this" {
 
   tags = {
     Name = "igw-identifier"
+  }
+}
+
+resource "aws_vpc_peering_connection" "this" {
+  peer_owner_id = var.peer_owner_id
+  peer_vpc_id   = var.peer_vpc_id
+  vpc_id        = aws_vpc.this.id
+  auto_accept   = true
+
+  tags = {
+    Name = "peer-identifier"
   }
 }
 
@@ -39,6 +54,12 @@ resource "aws_route_table" "ap" {
   tags = {
     Name = "ap"
   }
+}
+
+resource "aws_route" "ap" {
+  route_table_id = aws_route_table.ap.id
+  destination_cidr_block = data.aws_vpc.sandbox.cidr_block
+  vpc_peering_connection_id = aws_vpc_peering_connection.this.id
 }
 
 resource "aws_route_table" "db" {
@@ -113,7 +134,7 @@ resource "aws_subnet" "ap_c" {
     Name = "ap_c"
   }
 
-  depends_on = ["aws_internet_gateway.this"]
+  depends_on = ["aws_internet_gateway.this", "aws_vpc_peering_connection.this"]
 }
 
 resource "aws_route_table_association" "ap_c" {
@@ -131,7 +152,7 @@ resource "aws_subnet" "db_a" {
     Name = "db_a"
   }
 
-  depends_on = ["aws_internet_gateway.this"]
+  depends_on = ["aws_internet_gateway.this", "aws_vpc_peering_connection.this"]
 }
 
 resource "aws_route_table_association" "db_a" {

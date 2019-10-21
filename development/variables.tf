@@ -1,4 +1,6 @@
 #VPC
+variable "peer_owner_id" {}
+variable "peer_vpc_id" {}
 variable "vpc_cidr_block" {}
 variable "rtb_lb_cidr_block" {}
 variable "rtb_ap_cidr_block" {}
