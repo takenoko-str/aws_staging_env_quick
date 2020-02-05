@@ -25,7 +25,7 @@ resource "aws_cloudwatch_event_target" "this" {
       assign_public_ip = true
     }
   }
-  lifecycle {
-    ignore_changes = [ecs_target]
-  }
+  #lifecycle {
+  #  ignore_changes = [ecs_target]
+  #}
 }
