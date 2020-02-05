@@ -1,0 +1,9 @@
+ name: ${image_name}
+  image: ${registry_path}
+  essential: true
+  logConfiguration:
+    logDriver: awslogs
+    options:
+      awslogs-group: ${cw_log_group_name}
+      awslogs-region: ap-northeast-1
+      awslogs-stream-prefix: ecs

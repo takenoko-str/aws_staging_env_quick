@@ -1,0 +1,27 @@
+[
+    {
+        "name": "${image_name}",
+        "image": "${registry_path}",
+        "essential": true,
+        "environment": [
+            {
+                "name": "COW_NAME",
+                "value": "${cow_name}"
+            }
+        ],
+        "entryPoint": [
+            "cowsay"
+        ],
+        "command": [
+            "$PATH"
+        ],
+        "logConfiguration": {
+            "logDriver": "awslogs",
+            "options": {
+                "awslogs-group": "${cw_log_group_name}",
+                "awslogs-region": "ap-northeast-1",
+                "awslogs-stream-prefix": "ecs"
+            }
+        }
+    }
+]

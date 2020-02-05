@@ -1,0 +1,5 @@
+containerOverrides:
+- name: task
+  command:
+  - echo
+  - $PATH
